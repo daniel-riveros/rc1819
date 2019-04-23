@@ -1,0 +1,11 @@
+mas_veces([Ca|Res], E1, X) :- 
+		mas_veces(Res, E1, X),
+		E1 \= Ca,
+		contar(Ca, Res, Y),
+		Y =< X.
+					
+mas_veces([Ca|Res], Ca, Y) :- 
+		mas_veces(Res, E1, X),
+		E1 \= Ca,
+		contar(Ca, Res, Y),
+		Y > X.	
