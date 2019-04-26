@@ -19,4 +19,6 @@ ord_burbuja([E1 E2|Resto],  ) :- ord_burbuja(Resto, R).
 ordenada([]).
 ordenada([_]).
 % Con la expresion de abajo solo vale para listas de minimo dos elementos
-ordenada([E1,E2|Resto]) :- E1 =< E2, ordenada([E2|Resto]).
+ordenada([E1,E2|Resto]) :- 
+				E1 =< E2, 
+				ordenada([E2|Resto]).
