@@ -128,9 +128,3 @@ ordena_quick([Cab|Resto], R):-
 		ordena_quick(May, RMay),
 		append(RMen, [Cab|RMay], R).
 		
-		
-		
-		
-		
-		
-		

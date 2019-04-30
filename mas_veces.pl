@@ -1,37 +1,64 @@
-%------------------------------------------------------
-% mas_veces(+Lista, -Elem, -Num)
-% Es cierto cuando Elem unifica con el elemento
-% que se repite más veces en la lista Lista
-% y Num unifica con el número de veces que se
-% repite dicho elemento.
-%------------------------------------------------------
+% comprime(+Lista, -Resultado)
+% es cierto cuando Resultado unifica con una lista
+% en el siguiente formato:
+% 
+% comprime([1,1,1,2,2,3,4,4,4], R).
+% R = [(1,3),(2,2),(3,1),(4,4)]
+%
+% Tupla
+%('Jose', 21, '1,60')
+% 
+comprime([], []).
+comprime([E],[(E,1)]).
 
-mas_veces([_], _ , 1).
+% Poner el mismo nombre es una condición para que tenga el mismo valor
+comprime([Ca, Ca|Res], [(E,N1)|R]) :- 
+		comprime([Ca|Res], [(E,N)| R]),
+		N1 is N+1.
+		
+comprime([Ca1, Ca2|Res], [(Ca1,1)|R] ) :- 
+		Ca1 \= Ca2,
+		comprime([Ca2|Res], R).
+		
+% Caso Iguales
+% [1,1,1,2,2,3,4,4] -> [(1,3), (2,2), (3,1), (4,2)].
+% [1,1,2,2,3,4,4] -> [(1,2), (2,2), (3,1), (4,2)].
 
-% Si el elemento a buscar es el que estoy analizando ahora
- 
-mas_veces([Ca|Res], E1, X1) :- 
-		mas_veces(Res, E1, X),
-		Ca = E1,
-		X1 is X + 1.
-							   
-% Si el elemento no coincide debemos comprobar si ese elemento es mas buscado.
+% Caso Diferentes
+% [0,1,1,1,2,2,3,4,4] -> [(0,1), (1,3), (2,2), (3,1), (4,2)].
+% [1,1,1,2,2,3,4,4] -> [(1,2), (2,2), (3,1), (4,2)].
 
-mas_veces([Ca|Res], E1, X) :-
-		mas_veces(Res, E1, X),
-		Ca \= El.
-				
-				
-% contar(+E, +Lista, -N)
-% Es cierto cuando N unifica con el numero de veces que se repite
-% el elemento E en la Lista
+% mayor(+Lista, -Tupla).
+% es cierto si Tupla unifica con la tupla (E,N) de mayor N1
+% de la lista Lista en formato [(1,3), (2,2), (3,1), (4,2)]
+% donde el primer valor de la tupla es el elemento y el segundo
+% el numero de veces que se repite.
 
-contar(_, [], 0).
+mayor([(E,N)], (E,N)).
 
-contar(E, [Ca|Res], N1) :- contar(E, Res, N),
-						   E = Ca,
-						   N1 is N + 1.
-						
-contar(E, [Ca|Res], N) :- contar(E, Res, N),
-						   E \= Ca.
-							   
+mayor([(_,NH)|T], (E,N)) :- mayor(T, (E,N)), N > NH.
+
+mayor([(EH,NH)|T], (EH,NH)) :- mayor(T, (_,N)), N =< NH.
+
+% masveces
+
+masveces(L, E, N) :- msort(L, L2), comprime(L2, R), mayor(R, (E, N)).
+
+% [1,1,1,0,0,0,0,2,2,2,2,3,3,3,6,6]
+% [1,1,0,0,0,0,2,2,2,2,3,3,3,6,6] --> (1,2)
+%								  	  (0,4)
+%									  (2,4)
+%									  (3,3)
+%									  (6,2).
+
+masveces2([], []).
+masveces2([E], [(E,1)]).
+
+masveces2([H|T], (H,N2)) :- 
+		masveces2(T, R), 
+		member((H, N), R),
+		N2 is N+1.
+		
+masveces2([H|T], (E,N)) :- 
+		masveces2(T, R), 
+		\+ member((H, N), [(E,N)|R]).
