@@ -1,9 +1,10 @@
-% Problema del sobre, consiste en la creación de un sobre sin repetir ninguna arista.
 
-% No se pueden repetir aristas pero no es un ciclo, debe tener longitud 8.
-% Se debe pasar por todas y cada unas de las aristas
+% Debemos ver si existe un camino entre cada par de nodos
 
-grafo3(grafo([a,b,c,d,e], [a(a,b), a(a,c), a(b,c), a(b,d), a(b,e), a(c,d), a(c,e), a(d,e)])).
+
+grafo2(grafo([a,b,c,d,e], [a(a,b), a(a,c), a(b,c), a(b,d), a(b,e), a(c,d), a(c,e), a(d,e)])).
+
+grafo1(grafo([a,b,c,d,e], [])).
 
 conectado(grafo(_,A), Ini, Fin) :- member(a(Ini,Fin), A).
 conectado(grafo(_,A), Ini, Fin) :- member(a(Fin,Ini), A).
@@ -20,13 +21,9 @@ camino(G, Ini, Fin, Visitados , [a(Ini,Tmp) |Camino]) :-
 		\+ member(a(Tmp, Ini), Visitados),
 		camino(G, Tmp, Fin, [a(Ini, Tmp), a(Tmp, Ini) | Visitados], Camino).
 		
-
-% Debemos comprobar todas las combinaciones posibles
-
-recorrido(grafo(V, A), R, L) :- 
-	recorrido(grafo(V,A),R),
-	length(R,L).
-
-recorrido(grafo(V,A), R) :- member(Vertice, V),
-		camino(grafo(V,A), Vertice, _, [], R).
 		
+% Debemos comprobar todas las combinaciones posibles de pares de vertices
+
+
+no_conexo(grafo(V,A)) :- member(Vertice, V),
+		\+ camino(grafo(V,A), Vertice, _, [], _).
